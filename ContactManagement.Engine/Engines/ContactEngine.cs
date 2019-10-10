@@ -23,7 +23,6 @@
             _contactRepository = contactRepository ?? throw new ArgumentNullException(nameof(contactRepository));
         }
 
-
         #endregion
 
         #region "Public methods"
@@ -76,6 +75,19 @@
             catch (Exception ex)
             {
                 Log.Information("{Engine} - {Method} - Unable to get cantact. Error: {exception}", nameof(ContactEngine), nameof(GetContactByIdAsync), ex.Message);
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<IEnumerable<Contact>> GetAllContactsAsync()
+        {
+            try
+            {
+                return await _contactRepository.GetAllContactsAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Information("{Engine} - {Method} - Unable to get cantacts. Error: {exception}", nameof(ContactEngine), nameof(GetAllContactsAsync), ex.Message);
                 throw new Exception(ex.Message, ex);
             }
         }

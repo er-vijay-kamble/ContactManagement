@@ -14,7 +14,7 @@
 
     [Route("api/[controller]")]
     [ApiController]
-    public class ContactController : ControllerBase
+    public class ContactsController : ControllerBase
     {
         private readonly IContactEngine _contactEngine;
         private readonly IMapper _mapper;
@@ -24,13 +24,41 @@
         /// </summary>
         /// <param name="mapper"></param>
         /// <param name="contactEngine"></param>
-        public ContactController(IMapper mapper, IContactEngine contactEngine)
+        public ContactsController(IMapper mapper, IContactEngine contactEngine)
         {
             _contactEngine = contactEngine ?? throw new ArgumentNullException(nameof(contactEngine));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         #region "Public methods"
+
+        /// <summary>
+        /// Retrieves all contacts
+        /// </summary>
+        /// <returns>Contacts</returns>
+        /// <response code="200">Successfully retrieved active Contacts</response>
+        /// <response code="204">No Contact found</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="500">Internal server error</response>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Contact>>> GetAllContactsAsync()
+        {
+            Log.Information("{Controller} - {Method}", nameof(ContactsController), nameof(GetAllContactsAsync));
+
+            try
+            {
+                var contacts = await _contactEngine.GetAllContactsAsync();
+
+                if (contacts.Count() <= 0)
+                    return NoContent();
+
+                return Ok(_mapper.Map<IEnumerable<Contact>>(contacts));
+            }
+            catch (Exception e)
+            {
+                throw new InternalException("Internal server error", e);
+            }
+        }
 
         /// <summary>
         /// Retrieves all active contacts
@@ -41,10 +69,10 @@
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>
         [HttpGet]
-        [Route("ActiveContacts")]
+        [Route("Active")]
         public async Task<ActionResult<IEnumerable<Contact>>> GetAllActiveContactsAsync(int pageIndex, int pageSize = 10)
         {
-            Log.Information("{Controller} - {Method}", nameof(ContactController), nameof(GetAllActiveContactsAsync));
+            Log.Information("{Controller} - {Method}", nameof(ContactsController), nameof(GetAllActiveContactsAsync));
 
             if (pageIndex <= 0)
                 throw new ValidationException("PageIndex is InValid");
@@ -75,10 +103,10 @@
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>
         [HttpGet]
-        [Route("InActiveContacts")]
+        [Route("InActive")]
         public async Task<ActionResult<IEnumerable<Contact>>> GetAllInActiveContactsAsync(int pageIndex, int pageSize = 10)
         {
-            Log.Information("{Controller} - {Method}", nameof(ContactController), nameof(GetAllActiveContactsAsync));
+            Log.Information("{Controller} - {Method}", nameof(ContactsController), nameof(GetAllActiveContactsAsync));
 
             if (pageIndex <= 0)
                 throw new ValidationException("PageIndex is InValid");
@@ -91,7 +119,7 @@
 
                 if (contacts.Count() <= 0)
                     return NoContent();
-                
+
                 return Ok(_mapper.Map<IEnumerable<Contact>>(contacts));
             }
             catch (Exception e)
@@ -109,16 +137,16 @@
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>
         [HttpGet]
-        [Route("Contact/{contactId}")]
+        [Route("{contactId}")]
         public async Task<ActionResult<Contact>> GetContactByIdAsync(int contactId)
         {
-            Log.Information("{Controller} - {Method}", nameof(ContactController), nameof(GetContactByIdAsync));
+            Log.Information("{Controller} - {Method}", nameof(ContactsController), nameof(GetContactByIdAsync));
 
             if (contactId <= 0)
                 throw new ValidationException("ContactId is InValid");
             try
             {
-                Log.Information($"{nameof(ContactController)} - {nameof(GetContactByIdAsync)} - Request- ContactId: {contactId}");
+                Log.Information($"{nameof(ContactsController)} - {nameof(GetContactByIdAsync)} - Request- ContactId: {contactId}");
                 var contact = await _contactEngine.GetContactByIdAsync(contactId).ConfigureAwait(false);
                 return Ok(_mapper.Map<Contact>(contact));
             }
@@ -138,13 +166,12 @@
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>
         [HttpPost]
-        [Route("Contact")]
         [ValidateModel]
         public async Task<ActionResult<bool>> AddContactAsync(Contact contact)
         {
             try
             {
-                Log.Information($"{nameof(ContactController)} - {nameof(AddContactAsync)} - Contact: {Newtonsoft.Json.JsonConvert.SerializeObject(contact)}");
+                Log.Information($"{nameof(ContactsController)} - {nameof(AddContactAsync)} - Contact: {Newtonsoft.Json.JsonConvert.SerializeObject(contact)}");
                 return await _contactEngine.AddContactAsync(_mapper.Map<Domain.Models.Contact>(contact)).ConfigureAwait(false);
             }
             catch (Exception e)
@@ -163,13 +190,12 @@
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>
         [HttpPut]
-        [Route("Contact")]
         [ValidateModel]
         public async Task<ActionResult<bool>> UpdateContactAsync(Contact contact)
         {
             try
             {
-                Log.Information($"{nameof(ContactController)} - {nameof(UpdateContactAsync)} - Contact: {Newtonsoft.Json.JsonConvert.SerializeObject(contact)}");
+                Log.Information($"{nameof(ContactsController)} - {nameof(UpdateContactAsync)} - Contact: {Newtonsoft.Json.JsonConvert.SerializeObject(contact)}");
                 return await _contactEngine.UpdateContactAsync(_mapper.Map<Domain.Models.Contact>(contact)).ConfigureAwait(false);
             }
             catch (Exception e)
@@ -188,14 +214,14 @@
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>
         [HttpDelete]
-        [Route("Contact/{contactId}")]
+        [Route("{contactId}")]
         public async Task<ActionResult<bool>> DeleteContactAsync(int contactId)
         {
             if (contactId <= 0)
                 throw new ValidationException("ContactId is InValid");
             try
             {
-                Log.Information($"{nameof(ContactController)} - {nameof(DeleteContactAsync)} - ContactId: {contactId}");
+                Log.Information($"{nameof(ContactsController)} - {nameof(DeleteContactAsync)} - ContactId: {contactId}");
                 return await _contactEngine.DeleteContactAsync(contactId).ConfigureAwait(false);
             }
             catch (Exception e)

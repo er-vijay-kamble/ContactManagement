@@ -6,7 +6,6 @@
     using Serilog;
     using System;
     using System.Linq;
-    using System.Net;
 
     public class ValidateModelAttribute : ActionFilterAttribute
     {

@@ -25,7 +25,12 @@
         #endregion
 
         #region Methods
-        public async Task<ICollection<Contact>> GetAllActiveContactsAsync(int pageIndex, int pageSize = 10)
+        public async Task<IEnumerable<Contact>> GetAllContactsAsync()
+        {
+            return await Task.FromResult(_managementContext.Contacts);
+        }
+
+        public async Task<IEnumerable<Contact>> GetAllActiveContactsAsync(int pageIndex, int pageSize = 10)
         {
             return await Task.FromResult(
                 _managementContext.Contacts
@@ -33,11 +38,10 @@
                 .OrderBy(contact => contact.ContactId)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
-                .ToList()
                 );
         }
 
-        public async Task<ICollection<Contact>> GetAllInActiveContactsAsync(int pageIndex, int pageSize = 10)
+        public async Task<IEnumerable<Contact>> GetAllInActiveContactsAsync(int pageIndex, int pageSize = 10)
         {
             return await Task.FromResult(
                  _managementContext.Contacts
@@ -45,7 +49,6 @@
                 .OrderBy(contact => contact.ContactId)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
-                .ToList()
                 );
         }
 

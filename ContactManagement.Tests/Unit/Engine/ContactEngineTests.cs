@@ -137,14 +137,13 @@
 
         #endregion
 
-
         #region Private Methods
         private static Contact GetContact()
         {
             return new Contact { ContactId = 1, FirstName = "Fake0", LastName = "Test0", IsActive = false, Email = "test0@fake.com" };
         }
 
-        private static ICollection<Contact> GetContacts()
+        private static IEnumerable<Contact> GetContacts()
         {
             return new List<Contact>()
             {

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using System;
 
 namespace ContactManagement.Web.Client
 {
@@ -14,7 +10,26 @@ namespace ContactManagement.Web.Client
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            try
+            {
+                var configuration = new ConfigurationBuilder()
+                  .AddJsonFile("appsettings.json")
+                  .Build();
+
+                Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(configuration)
+                    .CreateLogger();
+
+                CreateWebHostBuilder(args).Build().Run();
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, "ContactManagement.Web.API stopped unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

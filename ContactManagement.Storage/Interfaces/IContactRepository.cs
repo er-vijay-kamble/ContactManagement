@@ -8,8 +8,9 @@
     {
         #region Methods
 
-        Task<ICollection<Contact>> GetAllActiveContactsAsync(int pageIndex, int pageSize = 10);
-        Task<ICollection<Contact>> GetAllInActiveContactsAsync(int pageIndex, int pageSize = 10);
+        Task<IEnumerable<Contact>> GetAllContactsAsync();
+        Task<IEnumerable<Contact>> GetAllActiveContactsAsync(int pageIndex, int pageSize = 10);
+        Task<IEnumerable<Contact>> GetAllInActiveContactsAsync(int pageIndex, int pageSize = 10);
 
         #endregion
     }

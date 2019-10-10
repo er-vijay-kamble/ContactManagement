@@ -49,7 +49,7 @@
             var result = await contactRepository.GetAllActiveContactsAsync(index, pageSize).ConfigureAwait(false);
 
             //Assert
-            Assert.True(result.Count <= pageSize);
+            Assert.True(result.Count() <= pageSize);
             Assert.True(result.All(contact => contact.IsActive));
         }
 
@@ -70,14 +70,14 @@
             var result = await contactRepository.GetAllInActiveContactsAsync(index, pageSize).ConfigureAwait(false);
 
             //Assert
-            Assert.True(result.Count <= pageSize);
+            Assert.True(result.Count() <= pageSize);
             Assert.True(result.All(contact => !contact.IsActive));
         }
 
         #endregion
 
         #region Private Methods
-        private static ICollection<Contact> GetContacts()
+        private static IEnumerable<Contact> GetContacts()
         {
             return new List<Contact>()
             {
