@@ -16,7 +16,7 @@ User can create, update, delete and view the contacts through this web applicati
 
   ##### Database
   * Install Microsoft SQL Server. Please find more information [here](https://docs.microsoft.com/en-gb/sql/database-engine/install-windows/install-sql-server?view=sql-server-2017).
-  * Create new table by executing [this](https://github.com/er-vijay-kamble/ContactManagement/blob/dev/ContactTable.sql) script on your desired database.
+  * Create new table by executing [this](https://github.com/er-vijay-kamble/ContactManagement/blob/dev/Data/ContactTable.sql) script on your desired database.
   * Please update your config files in code(described below) as follows,
 	* "DefaultConnection": "server=_your_server_name_;database=_your_database_name_;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False;Trusted_Connection=true"
   
