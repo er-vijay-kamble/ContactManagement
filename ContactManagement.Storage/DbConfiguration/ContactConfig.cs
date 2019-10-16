@@ -10,7 +10,7 @@
         {
             builder.ToTable(nameof(Contact), "dbo");
             builder.HasKey(c => c.ContactId);
-            builder.Property(c => c.ContactId).HasColumnName(nameof(Contact.ContactId));
+            builder.Property(c => c.ContactId).HasColumnName("Id");
             builder.Property(c => c.FirstName).HasColumnName(nameof(Contact.FirstName));
             builder.Property(c => c.LastName).HasColumnName(nameof(Contact.LastName));
             builder.Property(c => c.Email).HasColumnName(nameof(Contact.Email));

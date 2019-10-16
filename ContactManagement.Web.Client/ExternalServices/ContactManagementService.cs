@@ -28,6 +28,8 @@
         {
             _httpClientFactory = httpClientFactor ?? throw new ArgumentNullException(nameof(httpClientFactor));
             _contactManagementWebApiURL = configuration[$"{ServicesKey}:{ContactManagementWebApiURLKey}"];
+            if (_contactManagementWebApiURL.EndsWith('/'))
+                _contactManagementWebApiURL = _contactManagementWebApiURL.Trim('/');
         }
 
         #endregion
